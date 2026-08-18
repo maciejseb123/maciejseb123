@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz niemieckiego</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz {
+            width: 100%;
+            max-width: 550px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .numer-pytania {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .slowo {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .odpowiedzi {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .odpowiedz {
+            border: none;
+            padding: 18px 10px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #e9ecef;
+            transition: 0.2s;
+        }
+
+        .odpowiedz:hover:not(:disabled) {
+            background: #d9dde2;
+        }
+
+        .odpowiedz.dobra {
+            background: #28a745;
+            color: white;
+        }
+
+        .odpowiedz.zla {
+            background: #dc3545;
+            color: white;
+        }
+
+        .odpowiedz:disabled {
+            cursor: default;
+        }
+
+        #dalej {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #007bff;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #dalej:hover {
+            background: #0069d9;
+        }
+
+        #dalej:disabled {
+            background: #aaa;
+            cursor: default;
+        }
+
+        .wynik {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .quiz {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            .odpowiedzi {
+                grid-template-columns: 1fr;
+            }
+
+            .slowo {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz">
+
+    <h1>Quiz z niemieckiego</h1>
+
+    <div class="numer-pytania" id="numerPytania"></div>
+
+    <div class="slowo" id="slowo"></div>
+
+    <div class="odpowiedzi" id="odpowiedzi"></div>
+
+    <button id="dalej" disabled>Dalej</button>
+
+    <div class="wynik" id="wynik"></div>
+
+</div>
+
+
+<script>
+
+    // ==========================================
+    // BAZA PYTAŃ
+    // ==========================================
+
+    const pytania = [
+
+        {
+            pytanie: "Haus",
+            odpowiedzi: [
+                "dom",
+                "samochód",
+                "szkoła",
+                "ogród"
+            ],
+            poprawna: 0
+        },
+
+        {
+            pytanie: "Apfel",
+            odpowiedzi: [
+                "gruszka",
+                "jabłko",
+                "śliwka",
+                "pomarańcza"
+            ],
+            poprawna: 1
+        },
+
+        {
+            pytanie: "Wasser",
+            odpowiedzi: [
+                "mleko",
+                "sok",
+                "woda",
+                "kawa"
+            ],
+            poprawna: 2
+        },
+
+        {
+            pytanie: "Buch",
+            odpowiedzi: [
+                "książka",
+                "długopis",
+                "zeszyt",
+                "stół"
+            ],
+            poprawna: 0
+        },
+
+        {
+            pytanie: "Hund",
+            odpowiedzi: [
+                "kot",
+                "koń",
+                "pies",
+                "mysz"
+            ],
+            poprawna: 2
+        },
+
+        {
+            pytanie: "Schule",
+            odpowiedzi: [
+                "szpital",
+                "szkoła",
+                "sklep",
+                "dworzec"
+            ],
+            poprawna: 1
+        },
+
+        {
+            pytanie: "Auto",
+            odpowiedzi: [
+                "rower",
+                "samolot",
+                "samochód",
+                "pociąg"
+            ],
+            poprawna: 2
+        },
+
+        {
+            pytanie: "Freund",
+            odpowiedzi: [
+                "przyjaciel",
+                "brat",
+                "ojciec",
+                "sąsiad"
+            ],
+            poprawna: 0
+        }
+
+    ];
+
+
+    // ==========================================
+    // ZMIENNE
+    // ==========================================
+
+    let aktualnePytanie = 0;
+    let wynik = 0;
+    let odpowiedzUdzielona = false;
+
+
+    // ==========================================
+    // ELEMENTY HTML
+    // ==========================================
+
+    const slowo = document.getElementById("slowo");
+    const odpowiedzi = document.getElementById("odpowiedzi");
+    const dalej = document.getElementById("dalej");
+    const numerPytania = document.getElementById("numerPytania");
+    const wynikElement = document.getElementById("wynik");
+
+
+    // ==========================================
+    // WYŚWIETLENIE PYTANIA
+    // ==========================================
+
+    function pokazPytanie() {
+
+        odpowiedzUdzielona = false;
+
+        dalej.disabled = true;
+
+        wynikElement.textContent = "";
+
+        const pytanie = pytania[aktualnePytanie];
+
+        slowo.textContent = pytanie.pytanie;
+
+        numerPytania.textContent =
+            `Pytanie ${aktualnePytanie + 1} z ${pytania.length}`;
+
+        odpowiedzi.innerHTML = "";
+
+        // Tworzenie czterech przycisków
+        pytanie.odpowiedzi.forEach((odpowiedz, index) => {
+
+            const przycisk = document.createElement("button");
+
+            przycisk.className = "odpowiedz";
+
+            przycisk.textContent = odpowiedz;
+
+            przycisk.addEventListener("click", () => {
+
+                sprawdzOdpowiedz(index, przycisk);
+
+            });
+
+            odpowiedzi.appendChild(przycisk);
+
+        });
+    }
+
+
+    // ==========================================
+    // SPRAWDZENIE ODPOWIEDZI
+    // ==========================================
+
+    function sprawdzOdpowiedz(index, kliknietyPrzycisk) {
+
+        if (odpowiedzUdzielona) {
+            return;
+        }
+
+        odpowiedzUdzielona = true;
+
+        const pytanie = pytania[aktualnePytanie];
+
+        const wszystkiePrzyciski =
+            document.querySelectorAll(".odpowiedz");
+
+        // Wyłączamy wszystkie przyciski
+        wszystkiePrzyciski.forEach(przycisk => {
+            przycisk.disabled = true;
+        });
+
+
+        // Sprawdzamy odpowiedź
+        if (index === pytanie.poprawna) {
+
+            kliknietyPrzycisk.classList.add("dobra");
+
+            wynik++;
+
+        } else {
+
+            kliknietyPrzycisk.classList.add("zla");
+
+            // Pokazujemy również poprawną odpowiedź
+            wszystkiePrzyciski[pytanie.poprawna]
+                .classList.add("dobra");
+        }
+
+        // Można przejść dalej
+        dalej.disabled = false;
+    }
+
+
+    // ==========================================
+    // PRZYCISK "DALEJ"
+    // ==========================================
+
+    dalej.addEventListener("click", () => {
+
+        aktualnePytanie++;
+
+        if (aktualnePytanie < pytania.length) {
+
+            pokazPytanie();
+
+        } else {
+
+            zakonczQuiz();
+
+        }
+
+    });
+
+
+    // ==========================================
+    // KONIEC QUIZU
+    // ==========================================
+
+    function zakonczQuiz() {
+
+        slowo.textContent = "Koniec quizu";
+
+        numerPytania.textContent = "";
+
+        odpowiedzi.innerHTML = "";
+
+        dalej.style.display = "none";
+
+        wynikElement.textContent =
+            `Twój wynik: ${wynik} / ${pytania.length}`;
+
+    }
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    pokazPytanie();
+
+</script>
+
+</body>
+</html>

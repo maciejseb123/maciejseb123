@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Przekazanie zmiany</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            color: #222;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: #1f2937;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .notes-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .notes-title h2 {
+            margin: 0;
+        }
+
+        .counter {
+            background: #e5e7eb;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .note {
+            border: 1px solid #ddd;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .machine {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .user {
+            font-weight: bold;
+        }
+
+        .date {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .note-text {
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .notes-title {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .note-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Przekazanie zmiany</h1>
+        <p>Zapisz ważne informacje dla następnej zmiany</p>
+    </div>
+
+    <div class="panel">
+
+        <div class="form-group">
+            <label for="machine">Wybierz numer maszyny</label>
+
+            <select id="machine">
+                <option value="">-- Wybierz maszynę --</option>
+                <option value="Maszyna 1">Maszyna 1</option>
+                <option value="Maszyna 2">Maszyna 2</option>
+                <option value="Maszyna 3">Maszyna 3</option>
+                <option value="Maszyna 4">Maszyna 4</option>
+                <option value="Maszyna 5">Maszyna 5</option>
+                <option value="Maszyna 6">Maszyna 6</option>
+                <option value="Maszyna 7">Maszyna 7</option>
+                <option value="Maszyna 8">Maszyna 8</option>
+                <option value="Maszyna 9">Maszyna 9</option>
+                <option value="Maszyna 10">Maszyna 10</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="userId">Wybierz swój ID</label>
+
+            <select id="userId">
+                <option value="">-- Wybierz ID --</option>
+                <option value="ID 001">ID 001</option>
+                <option value="ID 002">ID 002</option>
+                <option value="ID 003">ID 003</option>
+                <option value="ID 004">ID 004</option>
+                <option value="ID 005">ID 005</option>
+                <option value="ID 006">ID 006</option>
+                <option value="ID 007">ID 007</option>
+                <option value="ID 008">ID 008</option>
+                <option value="ID 009">ID 009</option>
+                <option value="ID 010">ID 010</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="note">Notatka przy przekazaniu zmiany</label>
+
+            <textarea
+                id="note"
+                placeholder="Wpisz tutaj informację dla następnej zmiany..."
+            ></textarea>
+        </div>
+
+        <button onclick="saveNote()">
+            Zapisz notatkę
+        </button>
+
+        <div id="status" class="status"></div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="notes-title">
+            <h2>Ostatnie notatki</h2>
+
+            <span class="counter" id="counter">
+                0 / 10
+            </span>
+        </div>
+
+        <div id="notesList"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+        STRUKTURA PRZECHOWUJĄCA NOTATKI
+
+        Każdy element ma:
+        - machine - numer maszyny
+        - userId - ID osoby
+        - text - treść notatki
+        - date - data i godzina zapisu
+
+        Przykład:
+
+        [
+            {
+                machine: "Maszyna 3",
+                userId: "ID 004",
+                text: "Problem z czujnikiem.",
+                date: "18.08.2026, 22:10:00"
+            }
+        ]
+    */
+
+    let notes = JSON.parse(
+        localStorage.getItem("changeNotes")
+    ) || [];
+
+
+    /*
+        ZAPISANIE NOTATKI
+    */
+
+    function saveNote() {
+
+        const machine = document.getElementById("machine").value;
+        const userId = document.getElementById("userId").value;
+        const noteText = document.getElementById("note").value.trim();
+
+        const status = document.getElementById("status");
+
+
+        // Sprawdzenie formularza
+
+        if (machine === "") {
+            showStatus("Wybierz numer maszyny.", "error");
+            return;
+        }
+
+        if (userId === "") {
+            showStatus("Wybierz swoje ID.", "error");
+            return;
+        }
+
+        if (noteText === "") {
+            showStatus("Wpisz treść notatki.", "error");
+            return;
+        }
+
+
+        // Utworzenie nowej notatki
+
+        const newNote = {
+
+            machine: machine,
+
+            userId: userId,
+
+            text: noteText,
+
+            date: new Date().toLocaleString("pl-PL")
+
+        };
+
+
+        /*
+            NOWA NOTATKA ZAWSZE TRAFIA NA POCZĄTEK
+
+            unshift() dodaje element na początku tablicy.
+        */
+
+        notes.unshift(newNote);
+
+
+        /*
+            MAKSYMALNIE 10 NOTATEK
+
+            Jeżeli jest więcej niż 10,
+            usuwamy wszystkie poza pierwszymi 10.
+
+            Czyli:
+
+            1
+            2
+            3
+            ...
+            10
+
+            Po dodaniu 11:
+
+            11  <- nowa
+            1
+            2
+            ...
+            9
+
+            Stara 10 zostaje usunięta.
+        */
+
+        if (notes.length > 10) {
+            notes = notes.slice(0, 10);
+        }
+
+
+        /*
+            ZAPIS DO localStorage
+
+            Dzięki temu dane zostaną po
+            zamknięciu i ponownym otwarciu strony.
+        */
+
+        localStorage.setItem(
+            "changeNotes",
+            JSON.stringify(notes)
+        );
+
+
+        // Wyczyść pole notatki
+
+        document.getElementById("note").value = "";
+
+
+        // Odśwież listę
+
+        displayNotes();
+
+
+        showStatus(
+            "Notatka została zapisana.",
+            "success"
+        );
+    }
+
+
+    /*
+        WYŚWIETLANIE NOTATEK
+    */
+
+    function displayNotes() {
+
+        const notesList = document.getElementById("notesList");
+
+        const counter = document.getElementById("counter");
+
+
+        counter.textContent = notes.length + " / 10";
+
+
+        // Jeżeli nie ma notatek
+
+        if (notes.length === 0) {
+
+            notesList.innerHTML = `
+                <div class="empty">
+                    Brak zapisanych notatek.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        // Wyświetlenie notatek
+
+        notesList.innerHTML = notes.map((item) => {
+
+            return `
+
+                <div class="note">
+
+                    <div class="note-header">
+
+                        <div>
+                            <span class="machine">
+                                ${escapeHtml(item.machine)}
+                            </span>
+
+                            &nbsp; | &nbsp;
+
+                            <span class="user">
+                                ${escapeHtml(item.userId)}
+                            </span>
+                        </div>
+
+                        <div class="date">
+                            ${escapeHtml(item.date)}
+                        </div>
+
+                    </div>
+
+                    <div class="note-text">
+                        ${escapeHtml(item.text)}
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+    }
+
+
+    /*
+        ZABEZPIECZENIE PRZED WSTAWIENIEM HTML
+
+        Dzięki temu osoba wpisująca notatkę
+        nie może wstawić np. kodu HTML
+        do listy notatek.
+    */
+
+    function escapeHtml(text) {
+
+        const div = document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+    }
+
+
+    /*
+        KOMUNIKAT PO ZAPISANIU
+    */
+
+    function showStatus(message, type) {
+
+        const status = document.getElementById("status");
+
+        status.textContent = message;
+
+        status.className = "status " + type;
+
+
+        setTimeout(() => {
+
+            status.className = "status";
+
+        }, 3000);
+    }
+
+
+    /*
+        WCZYTANIE NOTATEK PO OTWARCIU STRONY
+    */
+
+    displayNotes();
+
+</script>
+
+</body>
+</html>
